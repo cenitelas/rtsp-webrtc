@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+    <title>rtsp-bench</title>
+</head>
+
+<body>
+<h3><a href="index.html">Video</a></h3>
+<div id="remoteVideos">
+</div>
+<br/>
+
+<div>
+    <button onclick="test2()"> ICE Restart (reconnect)</button>
+</div>
+
+<h3> Logs </h3>
+<div id="logs"></div>
+<h3> Chanel </h3>
+<ul id="ul-open"></ul>
+</body>
+
+<script>
+    let pc = new RTCPeerConnection({
+        iceServers: [
+            {
+                urls: 'stun:stun.l.google.com:19302'
+            },
+            {
+                urls: 'turn:numb.viagenie.ca:3478',
+                credential: "896325",
+                username: "cenitelas1@gmail.com",
+            }
+        ]
+    })
+    pc.addTransceiver('video')
+
+    let log = msg => {
+        document.getElementById('logs').innerHTML += msg + '<br>'
+    }
+    pc.oniceconnectionstatechange = () => log(pc.iceConnectionState)
+    pc.ontrack = function (event) {
+        let el = document.createElement(event.track.kind)
+        el.srcObject = event.streams[0]
+        el.autoplay = true
+        el.controls = true
+
+        document.getElementById('remoteVideos').appendChild(el)
+    }
+
+    // sendChannel = pc.createDataChannel('foo');
+    // sendChannel.onclose = () => console.log('sendChannel has closed');
+    // sendChannel.onopen = () => {
+    //     console.log('sendChannel has opened');
+    //     sendChannel.send('ping');
+    //     setInterval(() => {
+    //         sendChannel.send('ping');
+    //     }, 1000)
+    // }
+    // sendChannel.onmessage = e => log(`Message from DataChannel '${sendChannel.label}' payload '${e.data}'`);
+
+    window.doSignaling = async iceRestart => {
+       const response = await fetch("http://localhost:4090/rtsp-to-webrtc", {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json'
+           },
+           body: JSON.stringify({rtsp:"rtsp://view:123456789zz@10.20.43.194:554/cam/realmonitor?channel=1&subtype=0&unicast=true"})
+       });
+       let url = await response.json();
+        pc.createOffer()
+            .then(offer => {
+                pc.setLocalDescription(offer)
+                return fetch(url.webrtc, {
+                    method: 'post',
+                    headers: {
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(offer)
+                })
+            })
+            .then(res => res.json())
+            .then(res => pc.setRemoteDescription(res))
+            .catch(alert)
+    }
+
+    window.doSignaling(false)
+</script>
+</html>

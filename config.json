@@ -1,0 +1,5 @@
+{
+  "port": 4090,
+  "rtsp_timeout" : 60,
+  "rtp_timeout" : 10
+}
