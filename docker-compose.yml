@@ -1,0 +1,20 @@
+version: '3.1'
+
+networks:
+  vpcbr:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+services:
+  app:
+    image: library/golang:1.15.8
+    volumes:
+      - .:/go/src/app
+    working_dir: /go/src/app
+    command: go run main.go
+    ports:
+      - 3478:3478
+      - 4090:4090
+    networks:
+      vpcbr:
+        ipv4_address: 172.28.0.2

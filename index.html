@@ -26,9 +26,9 @@
                 urls: 'stun:stun.l.google.com:19302'
             },
             {
-                urls: 'turn:numb.viagenie.ca:3478',
-                credential: "896325",
-                username: "cenitelas1@gmail.com",
+                urls: 'turn:85.29.155.146:3478',
+                credential: "megacam",
+                username: "megacam",
             }
         ]
     })
@@ -59,12 +59,12 @@
     // sendChannel.onmessage = e => log(`Message from DataChannel '${sendChannel.label}' payload '${e.data}'`);
 
     window.doSignaling = async iceRestart => {
-       const response = await fetch("http://localhost:4090/rtsp-to-webrtc", {
+       const response = await fetch("http://192.168.1.190:4090/rtsp-to-webrtc", {
            method: 'POST',
            headers: {
                'Content-Type': 'application/json'
            },
-           body: JSON.stringify({rtsp:"rtsp://view:123456789zz@10.20.43.194:554/cam/realmonitor?channel=1&subtype=0&unicast=true"})
+           body: JSON.stringify({rtsp:"rtsp://view:123456789zz@85.29.138.130:35017/cam/realmonitor?channel=1&subtype=0&unicast=true"})
        });
        let url = await response.json();
         pc.createOffer()
