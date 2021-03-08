@@ -48,10 +48,7 @@ func doSignaling(c *gin.Context) {
 	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
 		ICEServers: []webrtc.ICEServer{
 			{
-				URLs: []string{"stun:stun.l.google.com:19302"},
-			},
-			{
-				URLs:       []string{"turn:85.29.155.146:3478"},
+				URLs:       []string{"turn:127.0.0.1:3478"},
 				Credential: "megacam",
 				Username:   "megacam",
 			},
