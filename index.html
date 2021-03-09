@@ -48,7 +48,7 @@
     // sendChannel.onmessage = e => log(`Message from DataChannel '${sendChannel.label}' payload '${e.data}'`);
 
     window.doSignaling = async iceRestart => {
-       const response = await fetch("http://172.17.2.160:4090/rtsp-to-webrtc", {
+       const response = await fetch("http://localhost:4090/rtsp-to-webrtc", {
            method: 'POST',
            headers: {
                'Content-Type': 'application/json'
@@ -60,7 +60,7 @@
         pc.createOffer()
             .then(offer => {
                 pc.setLocalDescription(offer)
-                return fetch(url.webrtc.replace('localhost','172.17.2.160'), {
+                return fetch(url.webrtc, {
                     method: 'post',
                     headers: {
                         'Accept': 'application/json, text/plain, */*',
